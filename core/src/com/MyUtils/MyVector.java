@@ -1,6 +1,8 @@
 package com.MyUtils;
 
 /**
+ * Custom integer vector class
+ *
  * Created by alect on 1/24/2016.
  */
 public class MyVector {
@@ -19,33 +21,35 @@ public class MyVector {
     }
 
     public boolean equals(MyVector other) {
-        if (other.x == this.x && other.y == this.y) return true;
-        else return false;
+        return other.x == this.x && other.y == this.y;
     }
 
     public boolean equals(int x, int y) {
-        if (x == this.x && y == this.y) return true;
-        else return false;
+        return x == this.x && y == this.y;
     }
 
-    public void add(int x, int y) {
+    public MyVector add(int x, int y) {
         this.x += x;
         this.y += y;
+        return this;
     }
 
-    public void add(MyVector other) {
+    public MyVector add(MyVector other) {
         this.x += other.x;
         this.y += other.y;
+        return this;
     }
 
-    public void sub(int x, int y) {
+    public MyVector sub(int x, int y) {
         this.x -= x;
         this.y -= y;
+        return this;
     }
 
-    public void sub(MyVector other) {
+    public MyVector sub(MyVector other) {
         this.x -= other.x;
         this.y -= other.y;
+        return this;
     }
 
     public String toString() {

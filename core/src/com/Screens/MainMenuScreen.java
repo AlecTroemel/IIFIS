@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 /**
+ * The main menu screen of the game
+ *
  * Created by alect on 1/23/2016.
  */
 public class MainMenuScreen implements Screen {
@@ -43,7 +45,7 @@ public class MainMenuScreen implements Screen {
         game.batch.end();
 
         if (Gdx.input.isTouched()) {
-            game.setScreen(new GameScreen(game,"Levels/test.tmx")); //GameScreen(game, "Levels/test.xml"));
+            game.setScreen(new GameScreen(game,"Levels/test.lvl")); //GameScreen(game, "Levels/test.xml"));
             dispose();
         }
     }

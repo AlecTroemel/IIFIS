@@ -3,21 +3,35 @@ package com.Objects;
 import com.MyUtils.MyVector;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.XmlReader;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 
 /**
+ * Map that holds all information about the level
+ * handles objects within the maze in addition of cats
+ *
  * Created by alect on 1/22/2016.
  */
 public class Map {
 
     private OrthogonalTiledMapRenderer renderer;
     private TiledMap map;
+    private ArrayList<MovableObject> objects;
+
+
     private float scale;
 
     //TODO: put this is a java properties file
@@ -37,13 +51,48 @@ public class Map {
 
         // set up renderer
         renderer = new OrthogonalTiledMapRenderer(map,scale);
+
+        // create the list of objects
+        objects = new ArrayList<MovableObject>();
+
+        // create cat
+        MovableObject cat = new Cat(this);
+        objects.add(cat);
+
+        // create all interactable layers
+        XmlReader reader = new XmlReader();
+        XmlReader.Element root;
+
+        try {
+            root = reader.parse(Gdx.files.internal(level));
+
+
+            Array<XmlReader.Element> objectList = root.getChildByName("objects").getChildrenByName("object");
+            for (XmlReader.Element obj : objectList) {
+                objects.add(new PushBlock(this, obj));
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
     }
 
     /**
      * Draw the map
-     * @param camera
+     * @param camera that will be used for rendering
      */
     public void render(OrthographicCamera camera) {
+        // update the movable objects
+        for(MovableObject mo : objects) {
+            mo.update();
+        }
+
+        // render maze
         renderer.setView(camera);
         renderer.render();
     }
@@ -54,6 +103,10 @@ public class Map {
     public void dispose() {
         map.dispose();
         renderer.dispose();
+
+        for(MovableObject mo : objects) {
+            mo.dispose();
+        }
     }
 
     /**
@@ -64,17 +117,49 @@ public class Map {
      */
     public boolean canMoveTo(MyVector from, MyVector to) {
         // check collision with walls
-        TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("walls");
+        TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("floor");
         TiledMapTileLayer.Cell cell = layer.getCell(to.x,to.y);
-        if (cell != null && cell.getTile() != null) return false;
+        if (cell != null && cell.getTile() != null) {
+            // wall tile
+            if (cell.getTile().getProperties().get("type").equals("wall")) {
+                return false;
+            }
+            // hole tile
+            else if (cell.getTile().getProperties().get("type").equals("hole")) {
+                return true;
+            }
 
-        // check collision with the cat
-        layer = (TiledMapTileLayer)map.getLayers().get("cat");
-        cell = layer.getCell(to.x,to.y);
-        if (cell != null && cell.getTile() != null) return false;
+
+        }
+
+        // see if the object calling this method can move to the place on the map if it is ocupied by another
+        for (MovableObject obj : objects) {
+            if (obj.hasAt(to)) {
+                if (!obj.allowMapMoveTo(from, to)) {
+                    return false;
+                }
+            }
+        }
 
         // if you reach here, you can move
         return true;
+
+        /*
+
+
+        // check collision with all the objects in the map
+        layer = (TiledMapTileLayer)map.getLayers().get("interact");
+        cell = layer.getCell(to.x,to.y);
+        if (cell != null && cell.getTile() != null) {
+            if (cell.getTile().getProperties().get("type").equals("wall")) {
+
+            }
+            return false;
+        }
+        // check collision with the cat
+
+*/
+
     }
 
     /**
@@ -89,15 +174,14 @@ public class Map {
      * @return the length of the cat
      */
     public int getCatLength() {
-        int temp = Integer.parseInt(map.getProperties().get("catLength", String.class));
-        return temp;
+        return Integer.parseInt(map.getProperties().get("catLength", String.class));
     }
 
     /**
      * @return the layer the cat belongs to in the map
      */
-    public TiledMapTileLayer getCatLayer() {
-        return (TiledMapTileLayer)this.map.getLayers().get("cat");
+    public TiledMapTileLayer getInteractLayer() {
+        return (TiledMapTileLayer)this.map.getLayers().get("interact");
     }
 
     /**

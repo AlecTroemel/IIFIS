@@ -12,31 +12,26 @@ import java.util.LinkedList;
 import java.util.Stack;
 
 /**
+ * The cat that can be clicked and dragged
+ *
  * Created by alect on 1/22/2016.
  */
-public class Cat {
+public class Cat extends MovableObject {
+    protected LinkedList<MyVector> positions;
+    protected Stack<MyVector> pastPositions;
 
-    private LinkedList<MyVector> positions;
-    private Stack<MyVector> pastPositions;
-    private TextureRegion[][] splitTiles;
-    private Texture tiles;
-    private Map map;
 
-    //TODO: put this is a java properties file
-    private int tileWidth = 32;
+
 
     /**
      * Constructor of cat
      * @param map: the map the cat belongs to
      */
     public Cat(Map map) {
-        this.map = map;
+        super(map, "SpriteSheet/programmer.png");
+
         this.pastPositions = new Stack<MyVector>();
         this.positions = new LinkedList<MyVector>();
-
-        // set up tiles of cat
-        tiles = new Texture(Gdx.files.internal("SpriteSheet/programmer.png"));
-        splitTiles = TextureRegion.split(tiles, tileWidth, tileWidth);
 
         // get cat attributes from the map
         MyVector startingPosition = map.getStartingPosition();
@@ -45,7 +40,7 @@ public class Cat {
         for(int i = 0; i < map.getCatLength(); i++) {
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
             cell.setTile(new StaticTiledMapTile(splitTiles[0][1]));
-            map.getCatLayer().setCell(startingPosition.x,startingPosition.y - i,cell);
+            map.getInteractLayer().setCell(startingPosition.x,startingPosition.y - i,cell);
             positions.addLast(new MyVector(startingPosition.x, startingPosition.y - i));
         }
     }
@@ -64,12 +59,7 @@ public class Cat {
         // touch input
         if (Gdx.input.justTouched()) {
             currentTouch = new MyVector((int)(Gdx.input.getX() / pixelWidth ), (int)((Gdx.graphics.getHeight() - Gdx.input.getY()) / pixelWidth));
-            if(positions.getFirst().equals(currentTouch)) {
-                movingCat = true;
-            }
-            else {
-                movingCat = false;
-            }
+            movingCat = positions.getFirst().equals(currentTouch);
         }
         else if (Gdx.input.isTouched()) {
             MyVector newTouch = new MyVector((int)(Gdx.input.getX() / pixelWidth), (int)((Gdx.graphics.getHeight() - Gdx.input.getY()) / pixelWidth));
@@ -109,22 +99,15 @@ public class Cat {
 
     /**
      * Helper method for touch input
-     * @param dir
-     * @return
+     * checks if direction is either up down left or right
+     * @param dir: direction to check
+     * @return true if it is a valid direction
      */
     private boolean validDirection(MyVector dir) {
         if(dir.equals(0,1)) return true;
         if(dir.equals(0,-1)) return true;
         if(dir.equals(1,0)) return true;
-        if(dir.equals(-1,0)) return true;
-        return false;
-    }
-
-    /**
-     * clean up method
-     */
-    public void dispose() {
-        tiles.dispose();
+        return dir.equals(-1, 0);
     }
 
     /**
@@ -137,12 +120,7 @@ public class Cat {
 
         // check if going backwards
         if (!pastPositions.isEmpty() && to.equals(positions.get(1))) {
-            // remove head
-            removeTile(positions.removeFirst());
-
-            // create new tail from past moves
-            setTile(pastPositions.peek(), new StaticTiledMapTile(splitTiles[0][1]));
-            positions.addLast(pastPositions.pop());
+            this.undo();
             return true;
         }
         // check if map allows movement
@@ -159,26 +137,36 @@ public class Cat {
     }
 
     /**
-     * Set the map tile
-     * @param pos: position of cat part
-     * @param tile: tile to change that part to
+     * undo the move (pop from stack)
      */
-    private void setTile(MyVector pos, StaticTiledMapTile tile) {
-        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-        cell.setTile(tile);
-        map.getCatLayer().setCell(pos.x,pos.y,cell);
+    @Override
+    public void undo() {
+        // remove head
+        removeTile(positions.removeFirst());
+
+        // create new tail from past moves
+        setTile(pastPositions.peek(), new StaticTiledMapTile(splitTiles[0][1]));
+        positions.addLast(pastPositions.pop());
     }
 
-    /**
-     * remove the cat tile at the given location
-     * @param pos of part to remove
-     */
-    private void removeTile(MyVector pos) {
-        map.getCatLayer().getCell(pos.x,pos.y).setTile(null);
-    }
 
     public int getLength() {
         return this.positions.size();
+    }
+
+    @Override
+    public boolean hasAt(MyVector position) {
+        for (MyVector spot : this.positions) {
+            if (position.equals(spot)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean allowMapMoveTo(MyVector from, MyVector to) {
+        return false;
     }
 
 }

@@ -13,13 +13,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 /**
+ * The main game screen, handles the GUI and map
+ *
  * Created by alect on 1/23/2016.
  */
 public class GameScreen implements Screen {
 
     final Main game;
     OrthographicCamera camera;
-    private Cat cat;
+
+   // private Cat cat2;
+
     protected Map map;
 
     private BitmapFont xyPos;
@@ -36,10 +40,12 @@ public class GameScreen implements Screen {
         //camera.translate(0,  -(Gdx.graphics.getHeight()/2.5f));
 
         // create map
-         map = new Map(levelPath);
+        map = new Map(levelPath);
 
-        // create cat
-        cat = new Cat(map);
+
+        //cat2 = new Cat(map,0,3);
+
+
 
 
         // font for debugging
@@ -73,7 +79,8 @@ public class GameScreen implements Screen {
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
 
-        cat.update();
+
+       // cat2.update();
         map.render(camera);
     }
 
@@ -100,7 +107,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         map.dispose();
-        cat.dispose();
     }
 
     public Map getMap()
@@ -108,80 +114,4 @@ public class GameScreen implements Screen {
         return this.map;
     }
 
-
-    private Vector2 oldPosition;
-    private boolean movingCat;
-    private void handleInput()
-    {
-       /*
-        if (Gdx.input.justTouched()) {
-            ;
-            oldPosition = new Vector2(Math.round(Gdx.input.getX() / 64), Math.round((Gdx.graphics.getHeight() - Gdx.input.getY()) / 64));
-            if(cat.getHeadPosition().equals(oldPosition))
-            {
-                movingCat = true;
-                //debug2 = "clicked on cat";
-            }
-            else {
-                movingCat = false;
-                //debug2 = "missed cat head";
-            }
-        }
-        else if(Gdx.input.isTouched())
-        {
-            Vector2 newPosition = new Vector2();
-            int x = Math.round(Gdx.input.getX() / 64);
-            int y = Math.round((Gdx.graphics.getHeight() - Gdx.input.getY()) / 64);
-
-            newPosition.set(x,y);
-            //debug = "Point Position x: " + x + " y: " + y;
-            //debug2 = "dragging";
-
-            if (movingCat) {
-                if (!newPosition.equals(oldPosition)) {
-                    Vector2 direction = new Vector2(newPosition);
-                    direction.sub(oldPosition);
-
-                    //debug = "Direction x: " + direction.x + " y: " + direction.y;
-                    // Left
-                    if (direction.equals(new Vector2(-1.0f,0.0f)))
-                    {
-                        if (cat.tryMoveLeft()) {
-                            oldPosition.set(newPosition);
-                        }
-                    }
-                    // Right
-                    else if (direction.equals(new Vector2(1.0f,0)))
-                    {
-                        if (cat.tryMoveRight()) {
-                            oldPosition.set(newPosition);
-                        }
-                    }
-                    // up
-                    else if (direction.equals(new Vector2(0,1.0f)))
-                    {
-                        if (cat.tryMoveUp()) {
-                            oldPosition.set(newPosition);
-                        }
-                    }
-                    // down
-                    else if (direction.equals(new Vector2(0,-1.0f)))
-                    {
-                        if (cat.tryMoveDown()) {
-                            oldPosition.set(newPosition);
-                        }
-                    }
-                }
-            }
-            // TODO: use camera
-            // camera.unproject(newPosition);
-        }
-        else {
-            //debug2 = "released";
-            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) cat.tryMoveLeft();
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) cat.tryMoveRight();
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) cat.tryMoveUp();
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) cat.tryMoveDown();
-        } */
-    }
 }
