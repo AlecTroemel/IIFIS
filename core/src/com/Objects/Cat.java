@@ -37,13 +37,55 @@ public class Cat extends MovableObject {
         MyVector startingPosition = map.getStartingPosition();
 
         // Add cat to map
-        for(int i = 0; i < map.getCatLength(); i++) {
-            TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-            cell.setTile(new StaticTiledMapTile(splitTiles[0][1]));
-            map.getInteractLayer().setCell(startingPosition.x,startingPosition.y - i,cell);
-            positions.addLast(new MyVector(startingPosition.x, startingPosition.y - i));
+
+
+        MyVector currentPos = new MyVector(startingPosition);
+
+        // add the first tile
+        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+        cell.setTile(new StaticTiledMapTile(splitTiles[0][1]));
+        map.getInteractLayer().setCell(currentPos.x,currentPos.y,cell);
+        positions.addLast(new MyVector(currentPos.x, currentPos.y));
+
+        currentPos.sub(0,1);
+        for(int i = 1; i < map.getCatLength(); i++) {
+            TiledMapTileLayer.Cell innercell = new TiledMapTileLayer.Cell();
+            innercell.setTile(new StaticTiledMapTile(splitTiles[0][1]));
+            map.getInteractLayer().setCell(currentPos.x,currentPos.y, innercell);
+            positions.addLast(new MyVector(currentPos.x, currentPos.y));
+
+            MyVector nextPos = getNextLoadingPosition(currentPos);
+
+            currentPos.set(nextPos);
         }
+
+        Gdx.app.log("cat done", "the cat is done being made");
     }
+
+    private MyVector getNextLoadingPosition(MyVector lastPos) {
+        MyVector position = new MyVector(lastPos);
+
+        // try move up
+        position.add(0,1);
+        if (map.canMoveTo(lastPos, position) && !hasAt(position)) {
+            return position;
+        }
+        // try to move left
+        position.sub(1,1);
+        if (map.canMoveTo(lastPos, position) && !hasAt(position)) {
+            return position;
+        }
+        // try to move right
+        position.add(2,0);
+        if (map.canMoveTo(lastPos, position) && !hasAt(position)) {
+            return position;
+        }
+
+        //else move down
+        position.sub(1,1);
+        return position;
+    }
+
 
     /**
      *  Update all things related to the cat
@@ -104,10 +146,11 @@ public class Cat extends MovableObject {
      * @return true if it is a valid direction
      */
     private boolean validDirection(MyVector dir) {
-        if(dir.equals(0,1)) return true;
-        if(dir.equals(0,-1)) return true;
-        if(dir.equals(1,0)) return true;
-        return dir.equals(-1, 0);
+        if (dir.equals(0, 1)) return true;
+        if (dir.equals(0, -1)) return true;
+        if (dir.equals(1, 0)) return true;
+        if (dir.equals(-1, 0)) return true;
+        return false;
     }
 
     /**

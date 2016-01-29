@@ -52,6 +52,16 @@ public class MyVector {
         return this;
     }
 
+    public void set(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void set(MyVector other) {
+        this.x = other.x;
+        this.y = other.y;
+    }
+
     public String toString() {
         return "x: " + this.x + " y: " + this.y;
     }

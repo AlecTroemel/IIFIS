@@ -15,7 +15,7 @@
 </objects>
 
  <properties>
-  <property name="catLength" value="5"/>
+  <property name="catLength" value="50"/>
   <property name="name" value="The Test Level"/>
   <property name="startPositionX" value="4"/>
   <property name="startPositionY" value="5"/>
@@ -54,7 +54,7 @@
   </tile>
   <tile id="11">
    <properties>
-    <property name="type" value="object"/>
+    <property name="type" value="floor"/>
    </properties>
   </tile>
  </tileset>
@@ -68,13 +68,13 @@
 7,5,5,5,5,5,5,5,5,7,
 7,5,5,5,5,5,5,5,5,7,
 7,5,5,5,5,5,7,7,7,7,
-7,5,5,5,5,7,7,11,11,11,
-7,7,7,7,5,7,11,11,11,11,
-11,11,11,11,11,11,11,11,11,11,
-11,11,11,11,11,11,11,11,11,11,
-11,11,11,11,11,11,11,11,11,11,
-11,11,11,11,11,11,11,11,11,11,
-11,11,11,11,11,11,11,11,11,11
+7,5,5,5,5,7,7,5,5,5,
+7,7,7,7,5,7,5,5,5,5,
+5,5,5,5,5,5,5,5,5,5,
+5,5,5,5,5,5,5,5,5,5,
+5,5,5,5,5,5,5,5,5,5,
+5,5,5,5,5,5,5,5,5,5,
+5,5,5,5,5,5,5,5,5,5,
 </data>
  </layer>
  <layer name="interact" width="10" height="15">

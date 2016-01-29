@@ -116,8 +116,17 @@ public class Map {
      * @return whether or not the object can move to the given locaiton
      */
     public boolean canMoveTo(MyVector from, MyVector to) {
-        // check collision with walls
+
+
+
+
+        // make sure the new position is within the bounds of the maze
         TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("floor");
+        if (to.x < 0 || to.x >= layer.getWidth()) return false;
+        if (to.y < 0 || to.y >= layer.getHeight()) return false;
+
+
+        // check collision with walls
         TiledMapTileLayer.Cell cell = layer.getCell(to.x,to.y);
         if (cell != null && cell.getTile() != null) {
             // wall tile
@@ -128,11 +137,9 @@ public class Map {
             else if (cell.getTile().getProperties().get("type").equals("hole")) {
                 return true;
             }
-
-
         }
 
-        // see if the object calling this method can move to the place on the map if it is ocupied by another
+        // see if the object calling this method can move to the place on the map if it is occupied by another
         for (MovableObject obj : objects) {
             if (obj.hasAt(to)) {
                 if (!obj.allowMapMoveTo(from, to)) {
@@ -143,23 +150,6 @@ public class Map {
 
         // if you reach here, you can move
         return true;
-
-        /*
-
-
-        // check collision with all the objects in the map
-        layer = (TiledMapTileLayer)map.getLayers().get("interact");
-        cell = layer.getCell(to.x,to.y);
-        if (cell != null && cell.getTile() != null) {
-            if (cell.getTile().getProperties().get("type").equals("wall")) {
-
-            }
-            return false;
-        }
-        // check collision with the cat
-
-*/
-
     }
 
     /**
