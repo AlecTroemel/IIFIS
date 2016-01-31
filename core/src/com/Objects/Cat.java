@@ -21,8 +21,6 @@ public class Cat extends MovableObject {
     protected Stack<MyVector> pastPositions;
 
 
-
-
     /**
      * Constructor of cat
      * @param map: the map the cat belongs to
@@ -37,8 +35,6 @@ public class Cat extends MovableObject {
         MyVector startingPosition = map.getStartingPosition();
 
         // Add cat to map
-
-
         MyVector currentPos = new MyVector(startingPosition);
 
         // add the first tile
@@ -86,39 +82,13 @@ public class Cat extends MovableObject {
         return position;
     }
 
-
     /**
      *  Update all things related to the cat
      *  handle input and move the cat
      *  TODO: play animations
      */
-    private MyVector currentTouch;
-    private boolean movingCat;
     public void update() {
         MyVector to = new MyVector(positions.getFirst());
-        float pixelWidth = tileWidth * map.getScale();
-
-        // touch input
-        if (Gdx.input.justTouched()) {
-            currentTouch = new MyVector((int)(Gdx.input.getX() / pixelWidth ), (int)((Gdx.graphics.getHeight() - Gdx.input.getY()) / pixelWidth));
-            movingCat = positions.getFirst().equals(currentTouch);
-        }
-        else if (Gdx.input.isTouched()) {
-            MyVector newTouch = new MyVector((int)(Gdx.input.getX() / pixelWidth), (int)((Gdx.graphics.getHeight() - Gdx.input.getY()) / pixelWidth));
-
-            if (movingCat) {
-                MyVector direction = new MyVector(newTouch);
-                direction.sub(currentTouch);
-
-                if (validDirection(direction)) {
-                    to.add(direction);
-
-                    if(tryMove(positions.getFirst(),to)) {
-                        currentTouch = newTouch;
-                    }
-                }
-            }
-        }
 
         // keyboard input
         if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
@@ -139,19 +109,6 @@ public class Cat extends MovableObject {
         }
     }
 
-    /**
-     * Helper method for touch input
-     * checks if direction is either up down left or right
-     * @param dir: direction to check
-     * @return true if it is a valid direction
-     */
-    private boolean validDirection(MyVector dir) {
-        if (dir.equals(0, 1)) return true;
-        if (dir.equals(0, -1)) return true;
-        if (dir.equals(1, 0)) return true;
-        if (dir.equals(-1, 0)) return true;
-        return false;
-    }
 
     /**
      * Try to move the cat from the given tile to the next tile
@@ -180,6 +137,13 @@ public class Cat extends MovableObject {
     }
 
     /**
+     * @return the vector location of the cats head
+     */
+    public MyVector getHeadLocation() {
+        return this.positions.getFirst();
+    }
+
+    /**
      * undo the move (pop from stack)
      */
     @Override
@@ -192,7 +156,9 @@ public class Cat extends MovableObject {
         positions.addLast(pastPositions.pop());
     }
 
-
+    /**
+     * @return the length of the cat
+     */
     public int getLength() {
         return this.positions.size();
     }
@@ -211,5 +177,6 @@ public class Cat extends MovableObject {
     protected boolean allowMapMoveTo(MyVector from, MyVector to) {
         return false;
     }
+
 
 }

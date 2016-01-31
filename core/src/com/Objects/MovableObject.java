@@ -24,15 +24,19 @@ public abstract class MovableObject {
     protected Map map;
 
     //TODO: put this is a java properties file
-    protected int tileWidth = 32;
+    public int tileWidth = 32;
 
+    /**
+     * constructor for the default movable object
+     * @param map this object belongs
+     * @param tileSheet that this object will draw from
+     */
     public MovableObject(Map map,String tileSheet) {
         this.map = map;
 
         tiles = new Texture(Gdx.files.internal(tileSheet));
         splitTiles = TextureRegion.split(tiles, tileWidth, tileWidth);
     }
-
 
     /**
      * clean up method
@@ -78,7 +82,18 @@ public abstract class MovableObject {
         map.getInteractLayer().getCell(pos.x,pos.y).setTile(null);
     }
 
+    /**
+     * check if this object has a tile at the given location
+     * @param position to check
+     * @return true if this object has a tile at the location
+     */
     protected abstract boolean hasAt(MyVector position);
 
+    /**
+     * What will this object do if another object tries to move to a location this object occupies
+     * @param from where the other object is coming from
+     * @param to where the other object is trying to go
+     * @return true if the other object may move to the to location
+     */
     protected  abstract boolean allowMapMoveTo(MyVector from, MyVector to);
 }

@@ -1,5 +1,6 @@
 package com.Objects;
 
+import com.MyUtils.MyCamera;
 import com.MyUtils.MyVector;
 
 import com.badlogic.gdx.Gdx;
@@ -31,6 +32,7 @@ public class Map {
     private TiledMap map;
     private ArrayList<MovableObject> objects;
 
+    private Cat cat;
 
     private float scale;
 
@@ -56,17 +58,17 @@ public class Map {
         objects = new ArrayList<MovableObject>();
 
         // create cat
-        MovableObject cat = new Cat(this);
-        objects.add(cat);
+        MovableObject c = new Cat(this);
+        objects.add(c);
+        cat = (Cat)c;
 
-        // create all interactable layers
+
+        // create all intractable layers
         XmlReader reader = new XmlReader();
         XmlReader.Element root;
 
         try {
             root = reader.parse(Gdx.files.internal(level));
-
-
             Array<XmlReader.Element> objectList = root.getChildByName("objects").getChildrenByName("object");
             for (XmlReader.Element obj : objectList) {
                 objects.add(new PushBlock(this, obj));
@@ -75,25 +77,25 @@ public class Map {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
-
-
     }
 
     /**
      * Draw the map
      * @param camera that will be used for rendering
      */
-    public void render(OrthographicCamera camera) {
+    public void render(float delta, MyCamera camera) {
         // update the movable objects
         for(MovableObject mo : objects) {
             mo.update();
         }
 
+
+        //camera.moveTo(cat.getHeadLocation());
+
+        camera.update(delta);
+
         // render maze
-        renderer.setView(camera);
+        renderer.setView(camera.getCamera());
         renderer.render();
     }
 
@@ -116,10 +118,6 @@ public class Map {
      * @return whether or not the object can move to the given locaiton
      */
     public boolean canMoveTo(MyVector from, MyVector to) {
-
-
-
-
         // make sure the new position is within the bounds of the maze
         TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("floor");
         if (to.x < 0 || to.x >= layer.getWidth()) return false;
@@ -165,6 +163,14 @@ public class Map {
      */
     public int getCatLength() {
         return Integer.parseInt(map.getProperties().get("catLength", String.class));
+    }
+
+    public MyVector getCatHeadPosition() {
+        return cat.getHeadLocation();
+    }
+
+    public Cat getCat() {
+        return this.cat;
     }
 
     /**

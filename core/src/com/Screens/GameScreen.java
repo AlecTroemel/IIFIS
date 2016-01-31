@@ -1,16 +1,19 @@
 package com.Screens;
 
 import com.Game.Main;
+import com.MyUtils.GameGestureListener;
+import com.MyUtils.MyCamera;
+import com.MyUtils.MyVector;
 import com.Objects.Cat;
 import com.Objects.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.input.GestureDetector;
+
 
 /**
  * The main game screen, handles the GUI and map
@@ -19,34 +22,25 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class GameScreen implements Screen {
 
-    final Main game;
-    OrthographicCamera camera;
-
-   // private Cat cat2;
-
+    private MyCamera camera;
     protected Map map;
+    final Main game;
 
+    // for debugging
+    private SpriteBatch batch;
     private BitmapFont xyPos;
     private BitmapFont press;
-    private SpriteBatch batch;
     private String debug;
     private String debug2;
 
     public GameScreen (final Main game, String levelPath) {
         this.game = game;
 
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        //camera.translate(0,  -(Gdx.graphics.getHeight()/2.5f));
-
         // create map
         map = new Map(levelPath);
 
-
-        //cat2 = new Cat(map,0,3);
-
-
-
+        // create my camera
+        camera = new MyCamera(map.getStartingPosition(), false, map.getScale());
 
         // font for debugging
         xyPos = new BitmapFont();
@@ -56,6 +50,9 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
         debug = " ";
         debug2 = " ";
+
+        // set up gesture listener for input
+        Gdx.input.setInputProcessor(new GestureDetector(new GameGestureListener(camera,map)));
     }
 
     @Override
@@ -73,15 +70,15 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // tell the camera to update its matrices.
-        camera.update();
+        //camera.update();
 
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
-        game.batch.setProjectionMatrix(camera.combined);
+        game.batch.setProjectionMatrix(camera.getCamera().combined);
 
 
        // cat2.update();
-        map.render(camera);
+        map.render(delta, camera);
     }
 
     @Override
@@ -107,11 +104,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         map.dispose();
+        batch.dispose();
     }
-
-    public Map getMap()
-    {
-        return this.map;
-    }
-
 }
