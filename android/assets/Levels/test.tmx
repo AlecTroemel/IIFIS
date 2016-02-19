@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="10" height="15" tilewidth="32" tileheight="32" nextobjectid="2">
-
  <properties>
   <property name="catLength" value="5"/>
   <property name="name" value="The Test Level"/>
   <property name="startPositionX" value="4"/>
   <property name="startPositionY" value="5"/>
  </properties>
+
  <tileset firstgid="1" name="programmer" tilewidth="32" tileheight="32" tilecount="12" columns="4">
   <image source="../SpriteSheet/programmer.png" width="128" height="96"/>
   <tile id="4">

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="32" tileheight="32" nextobjectid="1">
+ <properties>
+  <property name="catLength" value="5"/>
+  <property name="name" value="Empty Map"/>
+  <property name="startPositionX" value="0"/>
+  <property name="startPositionY" value="0"/>
+ </properties>
+ <tileset firstgid="1" name="programmer2" tilewidth="32" tileheight="32" tilecount="16" columns="4">
+  <image source="../SpriteSheet/programmer2.png" width="128" height="128"/>
+  <tile id="4">
+   <properties>
+    <property name="type" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="type" value="hole"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="type " value="arrow"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="type" value="obj_blue"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="type" value="obj_red"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="type" value="obj_green"/>
+   </properties>
+  </tile>
+  <tile id="11">
+   <properties>
+    <property name="type" value="obj_yellow"/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="type" value="grid"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="grid" width="10" height="10" opacity="0.5">
+  <data encoding="csv">
+13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13
+</data>
+ </layer>
+ <layer name="interact" width="10" height="10">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer name="floor" width="10" height="10">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>

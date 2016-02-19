@@ -20,7 +20,6 @@ public class Cat extends MovableObject {
     protected LinkedList<MyVector> positions;
     protected Stack<MyVector> pastPositions;
 
-
     /**
      * Constructor of cat
      * @param map: the map the cat belongs to
@@ -176,6 +175,14 @@ public class Cat extends MovableObject {
     @Override
     protected boolean allowMapMoveTo(MyVector from, MyVector to) {
         return false;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getSpacesLeft() {
+        return this.positions.size() - this.pastPositions.size() - 1;
     }
 
 

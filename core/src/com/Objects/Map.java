@@ -69,9 +69,13 @@ public class Map {
 
         try {
             root = reader.parse(Gdx.files.internal(level));
-            Array<XmlReader.Element> objectList = root.getChildByName("objects").getChildrenByName("object");
-            for (XmlReader.Element obj : objectList) {
-                objects.add(new PushBlock(this, obj));
+
+            XmlReader.Element objects = root.getChildByName("objects");
+            if (objects != null) {
+                Array<XmlReader.Element> objectList = objects.getChildrenByName("object");
+                for (XmlReader.Element obj : objectList) {
+                    this.objects.add(new PushBlock(this, obj));
+                }
             }
 
         } catch (IOException e) {
@@ -89,9 +93,7 @@ public class Map {
             mo.update();
         }
 
-
         //camera.moveTo(cat.getHeadLocation());
-
         camera.update(delta);
 
         // render maze
@@ -133,6 +135,18 @@ public class Map {
             }
             // hole tile
             else if (cell.getTile().getProperties().get("type").equals("hole")) {
+                return true;
+            }
+            // arrow tile
+            else if (cell.getTile().getProperties().get("type").equals("arrow")) {
+                // calculate direction
+                MyVector direction = new MyVector(to);
+                direction.sub(from);
+
+
+
+
+
                 return true;
             }
         }
