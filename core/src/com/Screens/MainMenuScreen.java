@@ -62,7 +62,8 @@ public class MainMenuScreen implements Screen {
         // set skin
         skin = new Skin();
         skin.add("default-font", BitmapFont.class);
-        FileHandle fileHandle = Gdx.files.internal("uiskin.json");
+
+        FileHandle fileHandle = Gdx.files.internal("UI/uiskin.json");
         FileHandle atlasFile = fileHandle.sibling("uiskin.atlas");
         if (atlasFile.exists()) {
             skin.addRegions(new TextureAtlas(atlasFile));
@@ -76,8 +77,6 @@ public class MainMenuScreen implements Screen {
         welcomeLabel.setFontScale(3);
         welcomeLabel.setPosition((Gdx.graphics.getWidth() / 2) - (welcomeLabel.getWidth()), Gdx.graphics.getHeight() * 0.90f); //.x = ( ( width - welcomeLabel.width ) / 2 );
         stage.addActor( welcomeLabel );
-
-
 
         //lets add a button
         TextButton button = new TextButton("Play Game!", skin);
@@ -119,26 +118,6 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-//        Gdx.gl.glClearColor(0,0,0.2f, 1);
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//
-//        stage.act(Gdx.graphics.getDeltaTime());
-//        stage.draw();
-//
-//
-//        // update camera
-//        camera.update();
-//        game.batch.setProjectionMatrix(camera.combined);
-//
-//        game.batch.begin();
-//        game.font.draw(game.batch, "If I Fits I Sits", Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/2);
-//        game.font.draw(game.batch, "Tap anywhere to begin", Gdx.graphics.getWidth()/4, (Gdx.graphics.getHeight()/2)-20);
-//        game.batch.end();
-//
-//        if (Gdx.input.isTouched()) {
-//            game.setScreen(new GameScreen(game,"Levels/test.lvl")); //GameScreen(game, "Levels/test.xml"));
-//            dispose();
-//        }
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();

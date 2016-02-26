@@ -16,10 +16,10 @@ public class LevelEditorGestureListener implements GestureListener {
     private MyCamera camera;
     private MyVector initialTouchPosition;
     private float scale;
-
     private boolean creating;
 
     private LevelEditorScreen screen;
+
 
     private int tileWidth = 32;
 
@@ -39,7 +39,6 @@ public class LevelEditorGestureListener implements GestureListener {
      */
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
-
         // get the map cell of where the user touches
         Vector3 temp = camera.getCamera().unproject(new Vector3(x, y, 0));
         initialTouchPosition = getGridPosition(temp.x, temp.y);
@@ -62,7 +61,8 @@ public class LevelEditorGestureListener implements GestureListener {
      * @return MyVector that is the map grid position
      */
     private MyVector getGridPosition(float x, float y) {
-        return new MyVector((int)(x / (tileWidth * scale)), (int)(((y) / (tileWidth * scale))));
+        float mapScale = 1;
+        return new MyVector((int)(x / (tileWidth * mapScale)), (int)(((y) / (tileWidth * mapScale))));
     }
 
     /**
@@ -116,7 +116,7 @@ public class LevelEditorGestureListener implements GestureListener {
 
         Gdx.app.log("pan", "x: " + gridPosition.x + " y:" + gridPosition.y);
         if (creating) {
-            screen.addTile( gridPosition);
+            screen.addTile(gridPosition);
         }
         else {
             camera.moveTo(position);

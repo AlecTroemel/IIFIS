@@ -33,7 +33,7 @@ public class LevelSelectionMenuScreen implements Screen {
 
        // table.setDebug(true); // This is optional, but enables debug lines for tables.
 
-        //lets add a button
+        //open test.lvl
         TextButton button = new TextButton("Test Level", skin);
         button.setWidth(Gdx.graphics.getWidth() / 1.5f);
         button.setHeight(button.getWidth() / 3);
@@ -48,6 +48,7 @@ public class LevelSelectionMenuScreen implements Screen {
         table.add(button).expandX().height(100).width(300);
         table.row();
 
+        // type in level name
         final TextField nameText = new TextField("", skin);
         table.add(nameText).expandX().height(50).width(300).padTop(50);
         table.row();

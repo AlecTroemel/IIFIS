@@ -6,7 +6,6 @@
   <property name="startPositionX" value="4"/>
   <property name="startPositionY" value="5"/>
  </properties>
-
  <tileset firstgid="1" name="programmer" tilewidth="32" tileheight="32" tilecount="12" columns="4">
   <image source="../SpriteSheet/programmer.png" width="128" height="96"/>
   <tile id="4">
@@ -64,7 +63,7 @@
 11,11,11,11,11,11,11,11,11,11
 </data>
  </layer>
- <layer name="interact" width="10" height="15">
+ <layer name="interact" width="10" height="15" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,

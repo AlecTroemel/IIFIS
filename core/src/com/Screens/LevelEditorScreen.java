@@ -20,10 +20,7 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.io.IOException;
@@ -36,80 +33,73 @@ public class LevelEditorScreen implements Screen {
     private TiledMap map;
     private Main game;
 
-
     private TiledMapRenderer renderer;
     private MyCamera camera;
-    private Texture tiles;
 
     private BitmapFont font;
     private SpriteBatch batch;
 
     private TiledMapTileLayer currentLayer;
-    private TextureAtlas.AtlasRegion currentTile;
     private int currentTileIndex;
+
     // UI
     Stage stage;
     Skin skin;
 
-
-
     private int width, height;
 
     /**
-     *
-     * @param game
+     *  constructor for the screen
+     * @param game: the main game object
+     * @param skn: the skin for the ui being used
      */
     public LevelEditorScreen(final Main game, Skin skn) {
         this.game = game;
         this.width = 10;
         this.height = 10;
+
         initPuzzle();
 
         camera = new MyCamera(new MyVector(width/2,height/2), false, 1.0f);
-        //Gdx.input.setInputProcessor(new GestureDetector(new LevelEditorGestureListener(camera, this)));
 
         initUI(skn);
 
+        // set up input listeners
         InputProcessor inputProcessor = new GestureDetector(new LevelEditorGestureListener(camera, this));
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(inputProcessor);
         inputMultiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-
-
         font = new BitmapFont();
         batch = new SpriteBatch();
-
     }
 
-
-    TextureAtlas atlas;
+    /**
+     * Construct tha maze (based on empty maze) and tile pointers
+     */
     public void initPuzzle() {
-        this.tiles = new Texture(Gdx.files.internal("SpriteSheet/programmer2.png"));
+        // create maze from default empty maze file
         this.map = new TmxMapLoader().load("Levels/empty_level.tmx");
-
-        atlas = new TextureAtlas(Gdx.files.internal("SpriteSheet/programmer2.atlas"));
 
         // set defaults
         currentLayer = (TiledMapTileLayer)map.getLayers().get("floor");
-        currentTile = atlas.findRegion("floor");
-        currentTileIndex = 0;
+        currentTileIndex = 1;
         renderer = new OrthogonalTiledMapRenderer(map);
 
     }
 
     /**
-     * Construct the UI
+     * Construct the UI and handle button inputs
      */
-
     Image tileThumbnail;
     TextButton moveLeft, moveRight, back, save;
+    TextField nameText;
+    TextField valueX, valueY;
+    TextField lengthValue;
     public void initUI(Skin skn) {
         this.skin = skn;
-
-        stage = new Stage();
-       // Gdx.input.setInputProcessor(stage);
+        this.stage = new Stage();
 
         Table table = new Table();
         table.setFillParent(true);
@@ -131,33 +121,29 @@ public class LevelEditorScreen implements Screen {
         moveLeft = new TextButton("<--", skin);
         moveLeft.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                currentTileIndex = currentTile.index-1;
-                if (currentTileIndex < 0) currentTileIndex = atlas.getRegions().size-1;
-                currentTile = atlas.getRegions().get(currentTileIndex);
+                currentTileIndex = currentTileIndex-1;
+                if (currentTileIndex < 1) currentTileIndex = map.getTileSets().getTileSet(0).size()-1;
 
                 tileThumbnail.setDrawable(
                     new SpriteDrawable(
                         new Sprite(map.getTileSets().getTileSet(0).getTile(currentTileIndex).getTextureRegion())
                     )
                 );
-
-                System.out.println("touchDown 2");
                 return false;
             }
         });
         table.add(moveLeft).width(100).height(100);
 
         // thumbnail
-        tileThumbnail = new Image(currentTile);
+        tileThumbnail = new Image(map.getTileSets().getTileSet(0).getTile(currentTileIndex).getTextureRegion());
         table.add(tileThumbnail).width(100).height(100);
 
         // cycle right
         moveRight = new TextButton("-->", skin);
         moveRight.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                currentTileIndex = currentTile.index+1;
-                if (currentTileIndex  == atlas.getRegions().size) currentTileIndex = 0;
-                currentTile = atlas.getRegions().get(currentTileIndex);
+                currentTileIndex = currentTileIndex+1;
+                if (currentTileIndex  == map.getTileSets().getTileSet(0).size()) currentTileIndex = 1;
                 tileThumbnail.setDrawable(
                         new SpriteDrawable(
                                 new Sprite(map.getTileSets().getTileSet(0).getTile(currentTileIndex).getTextureRegion())
@@ -169,6 +155,35 @@ public class LevelEditorScreen implements Screen {
         table.add(moveRight).width(100).height(100);
         table.row();
 
+        // map name input field
+        Label nameLabel = new Label("Level Name: ", skin);
+        table.add(nameLabel);
+        nameText = new TextField("Level Name", skin);
+        table.add(nameText).width(300).colspan(3);
+        table.row();
+
+        // cat x and y starting positions
+        Label labelX = new Label("start X: ", skin);
+        table.add(labelX);
+
+        valueX = new TextField("", skin);
+        table.add(valueX);
+
+        Label labelY = new Label("start Y: ", skin);
+        table.add(labelY);
+
+        valueY = new TextField("", skin);
+        table.add(valueY);
+        table.row();
+
+
+        Label lengthLabel = new Label("Cat Length", skin);
+        table.add(lengthLabel).colspan(2);
+        lengthValue = new TextField("", skin);
+        table.add(lengthValue).colspan(2);
+        table.row();
+
+        // save button
         save = new TextButton("Save level", skin);
         save.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -181,23 +196,10 @@ public class LevelEditorScreen implements Screen {
                 return false;
             }
         });
-        table.add(save).width(400).height(100).colspan(4);
+        table.add(save).width(400).height(50).colspan(4);
+        table.row();
     }
 
-
-
-    /**
-     *
-     * @param name
-     * @param width
-     * @param height
-     */
-    private void createLayer(String name, int width, int height) {
-        MapLayers layers = map.getLayers();
-        TiledMapTileLayer layer = new TiledMapTileLayer(width, height, 32, 32);
-        layer.setName(name);
-        layers.add(layer);
-    }
 
     /**
      *
@@ -214,16 +216,13 @@ public class LevelEditorScreen implements Screen {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                cell.setTile(new StaticTiledMapTile(atlas.findRegion("grid")));
+                cell.setTile(map.getTileSets().getTileSet(0).getTile(12));//atlas.findRegion("grid")));
                 layer.setCell(x, y, cell);
             }
         }
         layer.setName("grid");
-        //layer.setOpacity(0.5f);
         layers.add(layer);
     }
-
-
 
     /**
      * Called when this screen becomes the current screen for a game
@@ -298,19 +297,50 @@ public class LevelEditorScreen implements Screen {
 
     }
 
+    public void changeMapName(String name) {
+        map.getProperties().remove("name");
+        map.getProperties().put("name", name);
+    }
+
     /**
-     *
+     * add a tile at the given position
+     * the tile will be the tile at the current index
      * @param position
      */
     public void addTile(MyVector position) {
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         cell.setTile(map.getTileSets().getTileSet(0).getTile(currentTileIndex));
-        //cell.setTile(new StaticTiledMapTile(currentTile));
         currentLayer.setCell(position.x, position.y, cell);
     }
 
-    private void save() throws IOException {
-        TiledWritter.saveToFile(map);
+    private void setCatLength(int length) {
+        map.getProperties().remove("catLength");
+        map.getProperties().put("catLength", length);
     }
 
+    /**
+     * Change the starting position of the cat
+     * @param x
+     * @param y
+     */
+    private void setStartingPositions(int x, int y) {
+        map.getProperties().remove("startPositionX");
+        map.getProperties().put("startPositionX", x);
+        map.getProperties().remove("startPositionY");
+        map.getProperties().put("startPositionY", y);
+    }
+
+    /**
+     * save the maze to a file
+     * @throws IOException
+     */
+    private void save() throws IOException {
+        // update all the values
+        changeMapName(nameText.getText());
+        setStartingPositions(Integer.parseInt(valueX.getText()),Integer.parseInt(valueY.getText()));
+        setCatLength(Integer.parseInt(lengthValue.getText()));
+
+        // save level
+        TiledWritter.saveToFile(map);
+    }
 }

@@ -18,6 +18,10 @@ import java.util.Iterator;
  * Created by alect on 2/5/2016.
  */
 public class TiledWritter {
+    /**
+     * Write the given map to the file with the given name (no spaces!)
+     * @param map: to be written to file
+     */
     public static void saveToFile(TiledMap map) {
         StringWriter writer = new StringWriter();
         XmlWriter xml = new XmlWriter(writer);
@@ -122,7 +126,7 @@ public class TiledWritter {
         }
         // time to write everything to the file!
         try {
-            FileHandle handle = Gdx.files.internal("Levels/writeTest.lvl");
+            FileHandle handle = Gdx.files.internal("Levels/" + map.getProperties().get("name") + ".lvl");
             FileWriter fw = new FileWriter(handle.file());
             fw.write(writer.toString());
             fw.close();

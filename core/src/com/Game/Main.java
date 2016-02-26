@@ -1,5 +1,6 @@
 package com.Game;
 
+import com.Screens.GameScreen3d;
 import com.Screens.MainMenuScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -18,7 +19,8 @@ public class Main extends Game {
         font = new BitmapFont();
 
         // set the screen
-        this.setScreen(new MainMenuScreen(this));
+        //this.setScreen(new MainMenuScreen(this));
+        this.setScreen(new GameScreen3d(this));
     }
 
 	@Override

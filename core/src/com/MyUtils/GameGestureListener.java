@@ -30,7 +30,7 @@ public class GameGestureListener implements GestureListener {
         this.camera = camera;
         this.map = map;
         this.movingCat = false;
-        initialScale = 1;
+        this.initialScale = 1;
     }
 
     @Override
